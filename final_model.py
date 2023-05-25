@@ -71,7 +71,7 @@ if visual_method == "Geçmiş Veri":
 
     st.sidebar.header("Geçmiş Veri için Tarih Bilgileri:")
 
-    data_type = st.sidebar.selectbox("Veri Tipi: ", {"Nüfus", "Barajlar"}, index = 0)
+    data_type = st.sidebar.selectbox("Veri Tipi: ", {"Barajlar", "Nüfus", "Günlük Su Tüketimi"}, index = 0)
     if data_type == "Barajlar":
         dam_name = st.sidebar.selectbox("Baraj: ",
                                         {"Hepsi","Omerli", "Alibey", "Darlik", "Elmali", "Terkos", "Buyukcekmece", "Sazlidere","Kazandere", "Pabucdere", "Istrancalar"}, index = 0)
