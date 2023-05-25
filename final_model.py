@@ -33,13 +33,13 @@ Uygulamanın kullanımı için, kullanıcı tarafından belirli bir gün, ay ve 
 pd.set_option("display.width", 500)
 pd.set_option("display.max_columns", None)
 
-main_file_name = (r'C:\Users\hakan\OneDrive\Masaüstü\DSMLBC 11\07_Donem_Projesı\01_Models\SARIMAX_DAM_DAILY_3.xlsx') # change it to the name of your excel file
-#
-predicted_name = (r'C:\Users\hakan\OneDrive\Masaüstü\DSMLBC 11\07_Donem_Projesı\01_Models\predicted_data.xlsx') # change it to the name of your excel file
+# main_file_name = (r'C:\Users\hakan\OneDrive\Masaüstü\DSMLBC 11\07_Donem_Projesı\01_Models\SARIMAX_DAM_DAILY_3.xlsx') # change it to the name of your excel file
+# #
+# predicted_name = (r'C:\Users\hakan\OneDrive\Masaüstü\DSMLBC 11\07_Donem_Projesı\01_Models\predicted_data.xlsx') # change it to the name of your excel file
 
-# main_file_name = "SARIMAX_DAM_DAILY_3.xlsx"
-# predicted_name = "predicted_data.xlsx"
-#
+main_file_name = "SARIMAX_DAM_DAILY_3.xlsx"
+predicted_name = "predicted_data.xlsx"
+
 main_df = pd.read_excel(main_file_name)
 pred_df = pd.read_excel(predicted_name)
 
