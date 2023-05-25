@@ -29,7 +29,7 @@ if visual_method == "Bilgilendirme":
 
     """
     
-    Bu tahmin modeli, İBB Açık Veri Portalı'nda (https://data.ibb.gov.tr/dataset) sunulan, İstanbul Baraj Doluluk oranlarına ait verisetlerine ek olarak harici bir kaynak üzerinden elde edilen güncel ve geçmiş;
+    Bu tahmin modeli, İBB Açık Veri Portalı'nda (https://data.ibb.gov.tr/dataset) sunulan, İstanbul Baraj Doluluk verileri, şehir popülasyonu, baraj yağış oranları gibi verisetlerine ek olarak harici bir kaynak üzerinden elde edilen güncel ve geçmiş;
     
     - Yağmur,
     - Rüzgar,
@@ -48,6 +48,9 @@ if visual_method == "Bilgilendirme":
     - Oğuz Çalışkan - [Linkedin](https://www.linkedin.com/in/oğuz-çalışkan-71477939/)
     - Uğur Sarıçam - [Linkedin](https://www.linkedin.com/in/ugursaricam/)
     tarafından yapılmış ve kullanıma sunulmuştur.
+    
+    Çalışmada "Keras" modeli kullanılarak, baraj doluluğunu etkileme potansiyeli olan tüm değişkenler dikkate alınacak şekilde
+    modellenerek ileriye dönük tahmin modeli kurulmuştur. Tahmin modeli üzerinden elde edilen sonuçlara göre kullanıcılar, ileriye dönük İstanbul Baraj Doluluk değerlerini kontrol edebilecektir.
     
     """
 
