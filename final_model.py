@@ -370,7 +370,7 @@ elif visual_method == "Gelecek Veri":
     full_data = st.sidebar.selectbox("Veri Tipi: ", {"Baraj Doluluk"})
 
     min_date = pd.to_datetime("2021-02-22")  # Bugünden bir yıl önce
-    max_date = pd.to_datetime("2025-11-17")  # Bugünden bir yıl sonra
+    max_date = pd.to_datetime("2023-12-31")  # Bugünden bir yıl sonra
     default_date = datetime(2021, 2, 23)  # Varsayılan tarih
 
     # Tarih girdisini alın
