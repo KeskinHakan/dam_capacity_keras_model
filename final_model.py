@@ -9,6 +9,10 @@ import seaborn as sns
 import streamlit as st
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
+import plotly.graph_objects as go
+import plotly.colors as colors
+
+
 
 st.set_page_config(page_title="İstanbul Barajları Doluluk Oranı Tahminleme Modeli", page_icon="🖖")
 # st.title("Rule Based Classification of Customer's Data")
@@ -29,12 +33,12 @@ Uygulamanın kullanımı için, kullanıcı tarafından belirli bir gün, ay ve 
 pd.set_option("display.width", 500)
 pd.set_option("display.max_columns", None)
 
-# main_file_name = (r'C:\Users\hakan\OneDrive\Masaüstü\DSMLBC 11\07_Donem_Projesı\01_Models\SARIMAX_DAM_DAILY_3.xlsx') # change it to the name of your excel file
-# #
-# predicted_name = (r'C:\Users\hakan\OneDrive\Masaüstü\DSMLBC 11\07_Donem_Projesı\01_Models\predicted_data.xlsx') # change it to the name of your excel file
+main_file_name = (r'C:\Users\hakan\OneDrive\Masaüstü\DSMLBC 11\07_Donem_Projesı\01_Models\SARIMAX_DAM_DAILY_3.xlsx') # change it to the name of your excel file
+#
+predicted_name = (r'C:\Users\hakan\OneDrive\Masaüstü\DSMLBC 11\07_Donem_Projesı\01_Models\predicted_data.xlsx') # change it to the name of your excel file
 
-main_file_name = "SARIMAX_DAM_DAILY_3.xlsx"
-predicted_name = "predicted_data.xlsx"
+# main_file_name = "SARIMAX_DAM_DAILY_3.xlsx"
+# predicted_name = "predicted_data.xlsx"
 #
 main_df = pd.read_excel(main_file_name)
 pred_df = pd.read_excel(predicted_name)
@@ -44,10 +48,10 @@ pred_df = pd.read_excel(predicted_name)
 
 st.sidebar.header("Görselleştirme:")
 
-visual_method = st.sidebar.selectbox("Type of Structure: ", {"Geçmiş Veri", "Gelecek Veri"}, index=0)
+visual_method = st.sidebar.selectbox("Ana Veri: ", {"Geçmiş Veri", "Gelecek Veri"}, index=0)
 
 if visual_method == "Geçmiş Veri":
-    data_type = st.sidebar.selectbox("Veri Tipi: ", {"Nüfus", "Barajlar"})
+    data_type = st.sidebar.selectbox("Veri Tipi: ", {"Nüfus", "Barajlar"}, index = 1)
     if data_type == "Barajlar":
         dam_name = st.sidebar.selectbox("Baraj: ",
                                         {"Hepsi","Omerli", "Alibey", "Darlik", "Elmali", "Terkos", "Buyukcekmece", "Sazlidere","Kazandere", "Pabucdere", "Istrancalar"}, index = 0)
@@ -55,18 +59,19 @@ elif visual_method == "Gelecek Veri":
     full_data = st.sidebar.selectbox("Veri Tipi: ", {"Baraj Doluluk"})
 
 
-st.sidebar.header("Tahmin Edilecek Yıl Bilgileri:")
+st.sidebar.header("Tahmin Edilecek Tarih Bilgileri:")
 
 if visual_method == "Gelecek Veri":
-    month = st.sidebar.number_input("Ay", value=1, step=1, min_value=1, max_value=12)
+    month = st.sidebar.number_input("Ay", value=2, step=1, min_value=1, max_value=12)
     if month == 1 or month == 3 or month == 5 or month == 7 or month == 8 or month == 10 or month == 12:
         day = st.sidebar.number_input("Gün", value=1, step=1, min_value=1, max_value=31)
     elif month == 2:
         day = st.sidebar.number_input("Gün", value=1, step=1, min_value=1, max_value=28)
     else:
-        day = st.sidebar.number_input("Gün", value=1, step=1, min_value=1, max_value=30)
+        day = st.sidebar.number_input("Gün", value=22, step=1, min_value=1, max_value=30)
 
-    year = st.sidebar.number_input("Yıl",value=2023, step=1, min_value=2023, max_value = 2025)
+    year = st.sidebar.number_input("Yıl",value=2021, step=1, min_value=2021, max_value = 2025)
+
 elif visual_method == "Geçmiş Veri":
     month = st.sidebar.number_input("Ay", value=1, step=1, min_value=1, max_value=12)
     if month == 1 or month == 3 or month == 5 or month == 7 or month == 8 or month == 10 or month == 12:
@@ -119,6 +124,14 @@ if visual_method == "Geçmiş Veri":
 
             # Pasta grafiği oluşturma
             fig = go.Figure(data=go.Pie(labels=labels, values=values))
+
+            # Layout ayarları
+            fig.update_layout(
+                title='Veri Dağılımı',
+                height=500,  # Pasta grafiğinin yüksekliğini buradan ayarlayabilirsiniz
+                width=700,  # Pasta grafiğinin genişliğini buradan ayarlayabilirsiniz
+                margin=dict(l=50, r=50, t=100, b=50),  # Grafik kenar boşluklarını ayarlayabilirsiniz
+            )
 
             st.plotly_chart(fig)
 
@@ -176,18 +189,36 @@ if visual_method == "Geçmiş Veri":
                 unsafe_allow_html=True
             )
 
-            # Renk paleti
-            colors = ['rgb(31, 119, 180)', 'rgb(255, 127, 14)', 'rgb(44, 160, 44)', 'rgb(214, 39, 40)', 'rgb(148, 103, 189)',
-                      'rgb(140, 86, 75)', 'rgb(227, 119, 194)', 'rgb(127, 127, 127)', 'rgb(188, 189, 34)', 'rgb(23, 190, 207)']
+            # # Renk paleti
+            # colors = ['rgb(31, 119, 180)', 'rgb(255, 127, 14)', 'rgb(44, 160, 44)', 'rgb(214, 39, 40)', 'rgb(148, 103, 189)',
+            #           'rgb(140, 86, 75)', 'rgb(227, 119, 194)', 'rgb(127, 127, 127)', 'rgb(188, 189, 34)', 'rgb(23, 190, 207)']
 
             # Veriye uygun bir başlangıç noktası belirleme
             start_index = filtered_data[dam_name].idxmax()
 
-            # Bar chart oluşturma
-            fig = go.Figure(data=[go.Bar(x=filtered_data['DATE_'], y=filtered_data[dam_name], marker=dict(color=colors))])
+            # Renk paletini oluşturma
+            color_palette = colors.qualitative.Plotly
+
+            # Renk paleti ton sayısı
+            num_tones = 15
+
+            # Renk tonları listesi
+            tone_colors = [color_palette[i % len(color_palette)] for i in range(num_tones)]
+
+            # # Bar chart oluşturma
+            # fig = go.Figure(data=[go.Bar(x=filtered_data['DATE_'], y=filtered_data[dam_name], marker=dict(color=colors))])
+
+            # Çubukları renklendirme
+            fig = go.Figure(data=[go.Bar(
+                x=filtered_data['DATE_'],
+                y=filtered_data[dam_name],
+                marker=dict(
+                    color=tone_colors
+                )
+            )])
 
             # X ve Y ekseni etiketleri
-            fig.update_layout(xaxis_title='Tarih', yaxis_title='Değer')
+            fig.update_layout(xaxis_title='Tarih', yaxis_title='Doluluk [m3]')
 
             # # Grafiği görselleştirme
             # fig.show()
@@ -252,12 +283,32 @@ if visual_method == "Geçmiş Veri":
 
     elif data_type == "Nüfus":
         filtered_data = main_df[main_df['DATE_'] <= selected_date]
-        values = filtered_data[["DATE_",'Toplam_Pop']]
+        values = filtered_data[["DATE_", 'Toplam_Pop']]
+
+        st.markdown(
+            f"""
+            <h2 style="text-align: center; font-size: 20px;">2011 - 2021 Tarihleri Arasındaki Nüfus Değişimi</h2>
+            """,
+            unsafe_allow_html=True
+        )
 
         fig = go.Figure(data=go.Scatter(x=filtered_data['DATE_'], y=filtered_data['Toplam_Pop'],
-                                        mode='lines', line=dict(color='#FFA07A')))
+                                        mode='lines', line=dict(color='#FFA07A'),
+                                        name='Toplam Popülasyon'))
 
-        fig.update_layout(xaxis_title='Tarih', yaxis_title='Toplam_Pop')
+        fig.update_layout(
+            xaxis_title='Tarih',
+            yaxis_title='Toplam Popülasyon',
+            plot_bgcolor='rgba(25, 25, 50, 0.2)',  # Arka plan rengini buradan değiştirebilirsiniz
+            paper_bgcolor='black',  # Kağıt arka plan rengini buradan değiştirebilirsiniz
+            legend=dict(
+                x=0.02,
+                y=0.98,
+                bgcolor='rgba(100, 100, 100, 0.7)',
+                bordercolor='rgba(20, 20,20, 0.5)',
+                borderwidth=1
+            )
+        )
 
         # # Grafiği görselleştirme
         # fig.show(renderer="browser")
@@ -265,16 +316,21 @@ if visual_method == "Geçmiş Veri":
         st.plotly_chart(fig)
 
 elif visual_method == "Gelecek Veri":
+
+    #####################################
+    # 1 aylık baraj doluluk oranı tahmini.
+    #####################################
+
     # labels = filtered_df['DATE_']
     new_date = selected_date + pd.DateOffset(weeks=4)
     filtered_data = pred_df[(pred_df['DATE_'] <= new_date) & (pred_df['DATE_'] >= selected_date)]
 
-    first_day_new = new_date.strftime("%d-%m-%Y")
-    selected = selected_date.strftime("%d-%m-%Y")
+    first_day_new = selected_date.strftime("%d-%m-%Y")
+    last_day = new_date.strftime("%d-%m-%Y")
 
     st.markdown(
         f"""
-        <h2 style="text-align: center; font-size: 20px;">{first_day_new} - {selected} Tarihleri Arasındaki Baraj Doluluk Seviyeleri</h2>
+        <h2 style="text-align: center; font-size: 20px;">{first_day_new} - {last_day} Tarihleri Arasındaki Baraj Doluluk Seviyeleri</h2>
         """,
         unsafe_allow_html=True
     )
@@ -284,12 +340,26 @@ elif visual_method == "Gelecek Veri":
     # Veriye uygun bir başlangıç noktası belirleme
     start_index = filtered_data["BARAJ_DOLULUK"].idxmax()
 
-    # Bar chart oluşturma
-    fig = go.Figure(
-        data=[go.Bar(x=filtered_data['DATE_'], y=filtered_data["BARAJ_DOLULUK"])])
+    # Renk paletini oluşturma
+    color_palette = colors.qualitative.Plotly
+
+    # Renk paleti ton sayısı
+    num_tones = 30
+
+    # Renk tonları listesi
+    tone_colors = [color_palette[i % len(color_palette)] for i in range(num_tones)]
+
+    # Çubukları renklendirme
+    fig = go.Figure(data=[go.Bar(
+        x=filtered_data['DATE_'],
+        y=filtered_data["BARAJ_DOLULUK"],
+        marker=dict(
+            color=tone_colors
+        )
+    )])
 
     # X ve Y ekseni etiketleri
-    fig.update_layout(xaxis_title='Tarih', yaxis_title='Değer')
+    fig.update_layout(xaxis_title='Tarih', yaxis_title='Baraj Doluluk [m3]')
 
     # # Grafiği görselleştirme
     # fig.show()
@@ -299,7 +369,43 @@ elif visual_method == "Gelecek Veri":
 
     st.plotly_chart(fig)
 
+    #####################################
+    # Main_df ile pred_df'i birleştireceğiz.
+    #####################################
 
+
+    # labels = filtered_df['DATE_']
+
+    st.markdown(
+        f"""
+        <h2 style="text-align: center; font-size: 20px;">Baraj Doluluk Değerleri 2011-2026</h2>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Renk paleti
+
+    # Veriye uygun bir başlangıç noktası belirleme
+    main_data = main_df[["DATE_","BARAJ_DOLULUK"]]
+    pred_data = pred_df[["DATE_", "BARAJ_DOLULUK"]]
+    trace1 = go.Scatter(x=main_data["DATE_"], y=main_data["BARAJ_DOLULUK"], name="Orijinal Veri")
+    trace2 = go.Scatter(x=pred_data["DATE_"], y=pred_data["BARAJ_DOLULUK"], name="Tahmin Edilen Veri")
+
+    data = [trace1, trace2]
+
+    layout = go.Layout(
+        xaxis=dict(title="Tarih"),
+        yaxis=dict(title="Baraj Doluluk [m3]"),
+        width=800,  # Genişlik değerini istediğiniz gibi ayarlayın
+        height=500  # Yükseklik değerini istediğiniz gibi ayarlayın
+    )
+
+    fig = go.Figure(data=data, layout=layout)
+
+    # Grafiği görselleştirme
+    # fig.show(renderer="browser")
+
+    st.plotly_chart(fig)
 
 hide_menu_style = """
         <style>
