@@ -16,7 +16,6 @@ visual_method = st.sidebar.selectbox("Model Seçenekleri: ", {"Geçmiş Veri", "
 st.markdown("<h2 style='text-align: center; color: grey;'>İstanbul Barajları Doluluk Oranı Tahminleme Modeli </h2>",
             unsafe_allow_html=True)
 
-
 if visual_method == "Bilgilendirme":
     col1, col2, col3 = st.columns([1, 6, 1])
     with col1:
@@ -74,17 +73,18 @@ if visual_method == "Geçmiş Veri":
         dam_name = st.sidebar.selectbox("Baraj: ",
                                         {"Hepsi","Omerli", "Alibey", "Darlik", "Elmali", "Terkos", "Buyukcekmece", "Sazlidere","Kazandere", "Pabucdere", "Istrancalar"}, index = 0)
 
-    month = st.sidebar.number_input("Ay", value=1, step=1, min_value=1, max_value=12)
-    if month == 1 or month == 3 or month == 5 or month == 7 or month == 8 or month == 10 or month == 12:
-        day = st.sidebar.number_input("Gün", value=1, step=1, min_value=1, max_value=31)
-    elif month == 2:
-        day = st.sidebar.number_input("Gün", value=1, step=1, min_value=1, max_value=28)
-    else:
-        day = st.sidebar.number_input("Gün", value=1, step=1, min_value=1, max_value=30)
+    # Minimum ve maksimum tarihleri belirle
+    min_date = pd.to_datetime("2011-01-01") # Bugünden bir yıl önce
+    max_date = pd.to_datetime("2021-02-22")  # Bugünden bir yıl sonra
+    default_date = datetime(2020, 2, 22)  # Varsayılan tarih
 
-    year = st.sidebar.number_input("Yıl",value=2021, step=1, min_value=2012, max_value = 2021)
+    # Tarih girdisini alın
+    selected_date = st.sidebar.date_input("Tarih Seçin", value=default_date, min_value=min_date, max_value=max_date)
 
-    selected_date = pd.to_datetime(str(year) + "-" + str(month) + "-" + str(day))
+    # Seçilen tarihi formatlayın
+    # selected_date = selected_date.strftime("%d-%m-%Y")
+    selected_date = datetime.combine(selected_date, datetime.min.time())
+
 
     if data_type == "Barajlar":
         if dam_name == "Hepsi":
@@ -119,7 +119,6 @@ if visual_method == "Geçmiş Veri":
 
             # Layout ayarları
             fig.update_layout(
-                title='Veri Dağılımı',
                 height=500,  # Pasta grafiğinin yüksekliğini buradan ayarlayabilirsiniz
                 width=700,  # Pasta grafiğinin genişliğini buradan ayarlayabilirsiniz
                 margin=dict(l=50, r=50, t=100, b=50),  # Grafik kenar boşluklarını ayarlayabilirsiniz
@@ -157,17 +156,11 @@ if visual_method == "Geçmiş Veri":
             # X ve Y ekseni etiketleri
             fig.update_layout(xaxis_title='Tarih', yaxis_title='Değer')
 
-            # # Grafiği görselleştirme
-            # fig.show()
-
-            # Grafiği görselleştirme
-            # fig.show(renderer="browser")
-
             st.plotly_chart(fig)
 
         elif dam_name != "Hepsi":
             # labels = filtered_df['DATE_']
-            new_date = selected_date - pd.DateOffset(weeks=2)
+            new_date = selected_date - timedelta(weeks=4)
             filtered_data = main_df[(main_df['DATE_'] >= new_date) & (main_df['DATE_'] <= selected_date)]
 
 
@@ -181,10 +174,6 @@ if visual_method == "Geçmiş Veri":
                 unsafe_allow_html=True
             )
 
-            # # Renk paleti
-            # colors = ['rgb(31, 119, 180)', 'rgb(255, 127, 14)', 'rgb(44, 160, 44)', 'rgb(214, 39, 40)', 'rgb(148, 103, 189)',
-            #           'rgb(140, 86, 75)', 'rgb(227, 119, 194)', 'rgb(127, 127, 127)', 'rgb(188, 189, 34)', 'rgb(23, 190, 207)']
-
             # Veriye uygun bir başlangıç noktası belirleme
             start_index = filtered_data[dam_name].idxmax()
 
@@ -192,13 +181,10 @@ if visual_method == "Geçmiş Veri":
             color_palette = colors.qualitative.Plotly
 
             # Renk paleti ton sayısı
-            num_tones = 15
+            num_tones = 30
 
             # Renk tonları listesi
             tone_colors = [color_palette[i % len(color_palette)] for i in range(num_tones)]
-
-            # # Bar chart oluşturma
-            # fig = go.Figure(data=[go.Bar(x=filtered_data['DATE_'], y=filtered_data[dam_name], marker=dict(color=colors))])
 
             # Çubukları renklendirme
             fig = go.Figure(data=[go.Bar(
@@ -225,7 +211,7 @@ if visual_method == "Geçmiş Veri":
             #####################################
 
             filtered_data = main_df[main_df['DATE_'] <= selected_date]
-            selected_date = pd.to_datetime(str(year)+"-"+str(month)+"-"+str(day))
+            # selected_date = pd.to_datetime(str(year)+"-"+str(month)+"-"+str(day))
 
             # Son bir yıldaki aylık veriye denk gelen ayın son günlerini seçmek
             son_bir_yil_once = selected_date - timedelta(days=365)
@@ -313,24 +299,22 @@ elif visual_method == "Gelecek Veri":
 
     full_data = st.sidebar.selectbox("Veri Tipi: ", {"Baraj Doluluk"})
 
-    month = st.sidebar.number_input("Ay", value=2, step=1, min_value=1, max_value=12)
-    if month == 1 or month == 3 or month == 5 or month == 7 or month == 8 or month == 10 or month == 12:
-        day = st.sidebar.number_input("Gün", value=1, step=1, min_value=1, max_value=31)
-    elif month == 2:
-        day = st.sidebar.number_input("Gün", value=1, step=1, min_value=1, max_value=28)
-    else:
-        day = st.sidebar.number_input("Gün", value=22, step=1, min_value=1, max_value=30)
+    min_date = pd.to_datetime("2021-02-22")  # Bugünden bir yıl önce
+    max_date = pd.to_datetime("2025-11-17")  # Bugünden bir yıl sonra
+    default_date = datetime(2021, 2, 23)  # Varsayılan tarih
 
-    year = st.sidebar.number_input("Yıl",value=2021, step=1, min_value=2021, max_value = 2025)
+    # Tarih girdisini alın
+    selected_date = st.sidebar.date_input("Tarih Seçin", value=default_date, min_value=min_date, max_value=max_date)
 
-    selected_date = pd.to_datetime(str(year) + "-" + str(month) + "-" + str(day))
+    # Seçilen tarihi formatlayın
+    selected_date = datetime.combine(selected_date, datetime.min.time())
 
     #####################################
     # 1 aylık baraj doluluk oranı tahmini.
     #####################################
 
     # labels = filtered_df['DATE_']
-    new_date = selected_date + pd.DateOffset(weeks=4)
+    new_date = selected_date + timedelta(weeks=4)
     filtered_data = pred_df[(pred_df['DATE_'] <= new_date) & (pred_df['DATE_'] >= selected_date)]
 
     first_day_new = selected_date.strftime("%d-%m-%Y")
@@ -369,20 +353,12 @@ elif visual_method == "Gelecek Veri":
     # X ve Y ekseni etiketleri
     fig.update_layout(xaxis_title='Tarih', yaxis_title='Baraj Doluluk [m3]')
 
-    # # Grafiği görselleştirme
-    # fig.show()
-
-    # Grafiği görselleştirme
-    # fig.show(renderer="browser")
-
     st.plotly_chart(fig)
 
     #####################################
     # Main_df ile pred_df'i birleştireceğiz.
     #####################################
 
-
-    # labels = filtered_df['DATE_']
 
     st.markdown(
         f"""
@@ -391,7 +367,6 @@ elif visual_method == "Gelecek Veri":
         unsafe_allow_html=True
     )
 
-    # Renk paleti
 
     # Veriye uygun bir başlangıç noktası belirleme
     main_data = main_df[["DATE_","BARAJ_DOLULUK"]]
@@ -410,17 +385,11 @@ elif visual_method == "Gelecek Veri":
 
     fig = go.Figure(data=data, layout=layout)
 
-    # Grafiği görselleştirme
-    # fig.show(renderer="browser")
-
     st.plotly_chart(fig)
 
     #####################################
     # SEÇİLİ BARAJIN SON BİR YILDAKİ AY SONLARI DOLULUK DEĞERLERİ (%)
     #####################################
-
-    # Veriye uygun bir başlangıç noktası belirleme
-    selected_date = pd.to_datetime(str(year) + "-" + str(month) + "-" + str(day))
 
     # Son bir yıldaki aylık veriye denk gelen ayın son günlerini seçme
     son_bir_yil_once = selected_date - timedelta(days=365)
@@ -450,7 +419,6 @@ elif visual_method == "Gelecek Veri":
 
     # Grafik düzenlemeleri
     fig.update_layout(
-        title="Veriler",
         xaxis_title="Tarih",
         yaxis_title="Baraj Doluluk [m3]",
         barmode="group",
