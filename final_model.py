@@ -1,8 +1,3 @@
-# Kural Tabanlı Sınıflandırma ile Potansiyel Müşteri Getirisi Hesaplama
-
-# Mission 1
-
-# Q1
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -12,23 +7,50 @@ from datetime import datetime, timedelta
 import plotly.graph_objects as go
 import plotly.colors as colors
 
+st.set_page_config(page_title="İstanbul Barajları Doluluk [m3] Tahminleme Modeli", page_icon="🖖")
+
+st.sidebar.header("Baraj Doluluk Analizi:")
+
+visual_method = st.sidebar.selectbox("Model Seçenekleri: ", {"Geçmiş Veri", "Gelecek Veri", "Bilgilendirme"}, index=2)
+
+st.markdown("<h2 style='text-align: center; color: grey;'>İstanbul Barajları Doluluk Oranı Tahminleme Modeli </h2>",
+            unsafe_allow_html=True)
 
 
-st.set_page_config(page_title="İstanbul Barajları Doluluk Oranı Tahminleme Modeli", page_icon="🖖")
-# st.title("Rule Based Classification of Customer's Data")
-st.markdown("<h2 style='text-align: center; color: grey;'>İstanbul Barajları Doluluk Oranı Tahminleme Modeli </h2>", unsafe_allow_html=True)
-"""
+if visual_method == "Bilgilendirme":
+    col1, col2, col3 = st.columns([1, 6, 1])
+    with col1:
+        st.write("")
 
-Bu tahmin modeli, İBB Açık Veri Portalı'nda sunulan, İstanbul Baraj Doluluk oranlarına ait verisetleri kullanılarak, gelecek dönemdeki 
-toplam baraj doluluk oranlarının tahmini için tasarlanmıştır. 
+    with col2:
+        st.image("https://md.teyit.org/img/istanbul-barajlar.jpg")
 
-Uygulamanın kullanımı için, kullanıcı tarafından belirli bir gün, ay ve yıl tercihi yapması yeterli olacaktır. Ardından ilgili model,
-İstanbul'daki barajların toplam doluluk oranı sunacaktır.
+    with col3:
+        st.write("")
 
-
-Çalışma; Alper Umut Keskin, Hakan Keskin, Oğuz Çalışkan ve Uğur Sarıçam tarafından yapılmış ve kullanıma sunulmuştur.
-
-"""
+    """
+    
+    Bu tahmin modeli, İBB Açık Veri Portalı'nda (https://data.ibb.gov.tr/dataset) sunulan, İstanbul Baraj Doluluk oranlarına ait verisetlerine ek olarak harici bir kaynak üzerinden elde edilen güncel ve geçmiş;
+    
+    - Yağmur,
+    - Rüzgar,
+    - Sıcaklık,
+    
+    gibi doğrudan baraj doluluk oranını etkileyecek değişkenlerin yer aldığı verisetinin de yardımı ile, gelecek dönemdeki 
+    toplam baraj doluluk oranlarının tahmini için tasarlanmıştır. 
+    
+    Uygulamanın kullanımı için, kullanıcı tarafından belirli bir gün, ay ve yıl tercihi yapması yeterli olacaktır. Ardından ilgili model,
+    İstanbul'daki barajların toplam doluluk oranı sunacaktır.
+    
+    
+    Çalışma; 
+    - Alper Umut Keskin - [Linkedin](https://www.linkedin.com/in/alper-umut-keskin-10b25b77/)
+    - Hakan Keskin - [Linkedin](https://www.linkedin.com/in/hakan-keskin-/)
+    - Oğuz Çalışkan - [Linkedin](https://www.linkedin.com/in/oğuz-çalışkan-71477939/)
+    - Uğur Sarıçam - [Linkedin](https://www.linkedin.com/in/ugursaricam/)
+    tarafından yapılmış ve kullanıma sunulmuştur.
+    
+    """
 
 pd.set_option("display.width", 500)
 pd.set_option("display.max_columns", None)
@@ -43,36 +65,15 @@ predicted_name = "predicted_data.xlsx"
 main_df = pd.read_excel(main_file_name)
 pred_df = pd.read_excel(predicted_name)
 
-# # Mission 8
-#
-
-st.sidebar.header("Görselleştirme:")
-
-visual_method = st.sidebar.selectbox("Ana Veri: ", {"Geçmiş Veri", "Gelecek Veri"}, index=0)
-
 if visual_method == "Geçmiş Veri":
-    data_type = st.sidebar.selectbox("Veri Tipi: ", {"Nüfus", "Barajlar"}, index = 1)
+
+    st.sidebar.header("Geçmiş Veri için Tarih Bilgileri:")
+
+    data_type = st.sidebar.selectbox("Veri Tipi: ", {"Nüfus", "Barajlar"}, index = 0)
     if data_type == "Barajlar":
         dam_name = st.sidebar.selectbox("Baraj: ",
                                         {"Hepsi","Omerli", "Alibey", "Darlik", "Elmali", "Terkos", "Buyukcekmece", "Sazlidere","Kazandere", "Pabucdere", "Istrancalar"}, index = 0)
-elif visual_method == "Gelecek Veri":
-    full_data = st.sidebar.selectbox("Veri Tipi: ", {"Baraj Doluluk"})
 
-
-st.sidebar.header("Tahmin Edilecek Tarih Bilgileri:")
-
-if visual_method == "Gelecek Veri":
-    month = st.sidebar.number_input("Ay", value=2, step=1, min_value=1, max_value=12)
-    if month == 1 or month == 3 or month == 5 or month == 7 or month == 8 or month == 10 or month == 12:
-        day = st.sidebar.number_input("Gün", value=1, step=1, min_value=1, max_value=31)
-    elif month == 2:
-        day = st.sidebar.number_input("Gün", value=1, step=1, min_value=1, max_value=28)
-    else:
-        day = st.sidebar.number_input("Gün", value=22, step=1, min_value=1, max_value=30)
-
-    year = st.sidebar.number_input("Yıl",value=2021, step=1, min_value=2021, max_value = 2025)
-
-elif visual_method == "Geçmiş Veri":
     month = st.sidebar.number_input("Ay", value=1, step=1, min_value=1, max_value=12)
     if month == 1 or month == 3 or month == 5 or month == 7 or month == 8 or month == 10 or month == 12:
         day = st.sidebar.number_input("Gün", value=1, step=1, min_value=1, max_value=31)
@@ -83,17 +84,8 @@ elif visual_method == "Geçmiş Veri":
 
     year = st.sidebar.number_input("Yıl",value=2021, step=1, min_value=2012, max_value = 2021)
 
+    selected_date = pd.to_datetime(str(year) + "-" + str(month) + "-" + str(day))
 
-# Tarih filtresi
-selected_date = pd.to_datetime(str(year)+"-"+str(month)+"-"+str(day))
-
-# filtered_df = main_df[main_df['DATE_'] == selected_date]
-
-# Filtrelenmiş veri serisi
-
-# dam_name = "Hepsi"
-
-if visual_method == "Geçmiş Veri":
     if data_type == "Barajlar":
         if dam_name == "Hepsi":
 
@@ -317,6 +309,22 @@ if visual_method == "Geçmiş Veri":
 
 elif visual_method == "Gelecek Veri":
 
+    st.sidebar.header("Tahmin Verisi için Tarih Bilgileri:")
+
+    full_data = st.sidebar.selectbox("Veri Tipi: ", {"Baraj Doluluk"})
+
+    month = st.sidebar.number_input("Ay", value=2, step=1, min_value=1, max_value=12)
+    if month == 1 or month == 3 or month == 5 or month == 7 or month == 8 or month == 10 or month == 12:
+        day = st.sidebar.number_input("Gün", value=1, step=1, min_value=1, max_value=31)
+    elif month == 2:
+        day = st.sidebar.number_input("Gün", value=1, step=1, min_value=1, max_value=28)
+    else:
+        day = st.sidebar.number_input("Gün", value=22, step=1, min_value=1, max_value=30)
+
+    year = st.sidebar.number_input("Yıl",value=2021, step=1, min_value=2021, max_value = 2025)
+
+    selected_date = pd.to_datetime(str(year) + "-" + str(month) + "-" + str(day))
+
     #####################################
     # 1 aylık baraj doluluk oranı tahmini.
     #####################################
@@ -405,6 +413,53 @@ elif visual_method == "Gelecek Veri":
     # Grafiği görselleştirme
     # fig.show(renderer="browser")
 
+    st.plotly_chart(fig)
+
+    #####################################
+    # SEÇİLİ BARAJIN SON BİR YILDAKİ AY SONLARI DOLULUK DEĞERLERİ (%)
+    #####################################
+
+    # Veriye uygun bir başlangıç noktası belirleme
+    selected_date = pd.to_datetime(str(year) + "-" + str(month) + "-" + str(day))
+
+    # Son bir yıldaki aylık veriye denk gelen ayın son günlerini seçme
+    son_bir_yil_once = selected_date - timedelta(days=365)
+
+    secilen_gunler = pd.date_range(son_bir_yil_once, periods=13, freq='M') + pd.offsets.MonthEnd()
+
+    first_day_new = secilen_gunler[0].strftime("%d-%m-%Y")
+    last_day_new = secilen_gunler[-1].strftime("%d-%m-%Y")
+
+    st.markdown(
+        f"""
+        <h2 style="text-align: center; font-size: 20px;">{first_day_new} - {last_day_new} Tarihleri Arasındaki Toplam Doluluk Değerleri</h2>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # "dam_name" e göre filtreleme yapma
+    filtered_data = pred_df[["DATE_", "BARAJ_DOLULUK"]]
+
+    # Seçilen günleri içeren verileri filtreleme
+    filtered_data = filtered_data[filtered_data["DATE_"].isin(secilen_gunler)]
+
+    # Bar grafiği oluşturma
+    fig = go.Figure(data=[
+        go.Bar(x=filtered_data["DATE_"], y=filtered_data["BARAJ_DOLULUK"], marker_color='rgb(0, 128, 128)')
+    ])
+
+    # Grafik düzenlemeleri
+    fig.update_layout(
+        title="Veriler",
+        xaxis_title="Tarih",
+        yaxis_title="Baraj Doluluk [m3]",
+        barmode="group",
+        showlegend=False,
+        width=800,
+        height=500
+    )
+
+    # Grafiği görüntüleme
     st.plotly_chart(fig)
 
 hide_menu_style = """
