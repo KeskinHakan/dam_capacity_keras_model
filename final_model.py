@@ -296,6 +296,40 @@ if visual_method == "Geçmiş Veri":
 
         st.plotly_chart(fig)
 
+    elif data_type == "Günlük Su Tüketimi":
+        filtered_data = main_df[main_df['DATE_'] <= selected_date]
+        values = filtered_data[["DATE_", 'gunluk_su_tuketimi_m3']]
+
+        st.markdown(
+            f"""
+                <h2 style="text-align: center; font-size: 20px;">2011 - 2021 Tarihleri Arasındaki Günlük Su Tüketimi Değişimi</h2>
+                """,
+            unsafe_allow_html=True
+        )
+
+        fig = go.Figure(data=go.Scatter(x=filtered_data['DATE_'], y=filtered_data['gunluk_su_tuketimi_m3'],
+                                        mode='lines', line=dict(color='#FFA07A'),
+                                        name='Günlük Su Tüketimi [m3]'))
+
+        fig.update_layout(
+            xaxis_title='Tarih',
+            yaxis_title='Günlük Su Tüketimi [m3]',
+            plot_bgcolor='rgba(25, 25, 50, 0.2)',  # Arka plan rengini buradan değiştirebilirsiniz
+            paper_bgcolor='black',  # Kağıt arka plan rengini buradan değiştirebilirsiniz
+            legend=dict(
+                x=0.02,
+                y=0.98,
+                bgcolor='rgba(100, 100, 100, 0.7)',
+                bordercolor='rgba(20, 20,20, 0.5)',
+                borderwidth=1
+            )
+        )
+
+        # # Grafiği görselleştirme
+        # fig.show(renderer="browser")
+
+        st.plotly_chart(fig)
+
 elif visual_method == "Gelecek Veri":
 
     st.sidebar.header("Tahmin Verisi için Tarih Bilgileri:")
