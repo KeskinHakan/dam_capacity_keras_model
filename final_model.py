@@ -432,7 +432,7 @@ elif visual_method == "Gelecek Veri":
 
     st.markdown(
         f"""
-        <h2 style="text-align: center; font-size: 20px;">Baraj Doluluk Değerleri 2011-2026</h2>
+        <h2 style="text-align: center; font-size: 20px;">Baraj Doluluk Değerleri 2011-2023</h2>
         """,
         unsafe_allow_html=True
     )
