@@ -7,14 +7,57 @@ from datetime import datetime, timedelta
 import plotly.graph_objects as go
 import plotly.colors as colors
 
+
 st.set_page_config(page_title="İstanbul Barajları Doluluk [m3] Tahminleme Modeli", page_icon="🖖")
 
-st.sidebar.header("Baraj Doluluk Analizi:")
+st.markdown("""
+    <style>
+    .background {
+        background-color: rgba(0, 0, 0, 0.30); /* Arka plan rengi ve transparanlık seviyesi */
+        padding: 20px; /* İçeriği kenarlardan ayırmak için padding eklendi */
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-visual_method = st.sidebar.selectbox("Model Seçenekleri: ", {"Geçmiş Veri", "Gelecek Veri", "Bilgilendirme"}, index=2)
+st.markdown("""
+    <style>
+    .background_bilgilendirme {
+        background-color: rgba(0, 0, 0, 0.90); /* Arka plan rengi ve transparanlık seviyesi */
+        padding: 20px; /* İçeriği kenarlardan ayırmak için padding eklendi */
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-st.markdown("<h2 style='text-align: center; color: grey;'>İstanbul Barajları Doluluk Oranı Tahminleme Modeli </h2>",
-            unsafe_allow_html=True)
+# # Set white background color and page width
+st.markdown(
+    f"""
+     <style>
+     .stApp {{
+         background-image: url("https://images.unsplash.com/photo-1518887668165-8fa91a9178be?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80");
+         background-attachment: fixed;
+         background-size: cover;
+         opacity: 1; /* Transparanlık seviyesi */
+     }}
+     </style>
+     """,
+    unsafe_allow_html=True
+)
+
+st.sidebar.markdown("<h2 style='text-align: center;'>İstanbul Barajları Doluluk Oranı Tahminleme Modeli</h2>",
+                    unsafe_allow_html=True)
+
+# Gif dosyasının URL'si
+gif_url = "https://media.tenor.com/47z7lWE2rC8AAAAC/hydro-dam.gif"
+
+# Yan çubuğa GIF'i ekleme
+st.sidebar.markdown(
+    f'<img src="{gif_url}" alt="GIF" width="300">',
+    unsafe_allow_html=True
+)
+
+# Yan çubuk içeriği
+
+visual_method = st.sidebar.selectbox("Model Seçenekleri: ", {"Bilgilendirme","Geçmiş Veriler", "Tahmin Sonuçları"}, index=0)
 
 if visual_method == "Bilgilendirme":
     col1, col2, col3 = st.columns([1, 6, 1])
@@ -27,59 +70,66 @@ if visual_method == "Bilgilendirme":
     with col3:
         st.write("")
 
-    """
-    
-    Bu tahmin modeli, İBB Açık Veri Portalı'nda (https://data.ibb.gov.tr/dataset) sunulan, İstanbul Baraj Doluluk verileri, şehir popülasyonu, baraj yağış oranları gibi verisetlerine ek olarak harici bir kaynak üzerinden elde edilen güncel ve geçmiş;
+    st.markdown(
+        f"""
+        <div class='background_bilgilendirme'><h2font-size: 20px;">    
+        
+    Bu tahmin modeli, [İBB Açık Veri Portalı'nda](https://data.ibb.gov.tr/dataset) sunulan, İstanbul Baraj Doluluk verileri, şehir
+    popülasyonu, baraj yağış oranları gibi verisetlerine ek olarak harici bir kaynak üzerinden elde edilen güncel ve geçmiş;
     
     - Yağmur,
     - Rüzgar,
     - Sıcaklık,
+    - Günlük hava verileri
+    - Pandemi
     
     gibi doğrudan baraj doluluk oranını etkileyecek değişkenlerin yer aldığı verisetinin de yardımı ile, gelecek dönemdeki 
-    toplam baraj doluluk oranlarının tahmini için tasarlanmıştır. 
+    toplam baraj doluluk oranlarının tahmini için tasarlanmıştır. Hava durumu ile ilgili tüm geçmiş veriler [Meteomatics](https://www.meteomatics.com/en/weather-api/?ppc_keyword=meteomatics&gclid=Cj0KCQjwqNqkBhDlARIsAFaxvwxT0hTWeoRH55FmndtCGL37WwIIFoCJE5wiTPZvphOiWvVX2Ew3gN4aAmwoEALw_wcB) sitesi üzerinden Weather API kullanılarak çekilmiştir.
     
     Uygulamanın kullanımı için, kullanıcı tarafından belirli bir gün, ay ve yıl tercihi yapması yeterli olacaktır. Ardından ilgili model,
     İstanbul'daki barajların toplam doluluk oranı sunacaktır.
     
     
     Çalışma; 
-    - Alper Umut Keskin - [Linkedin](https://www.linkedin.com/in/alper-umut-keskin-10b25b77/)
-    - Hakan Keskin - [Linkedin](https://www.linkedin.com/in/hakan-keskin-/)
-    - Oğuz Çalışkan - [Linkedin](https://www.linkedin.com/in/oğuz-çalışkan-71477939/)
-    - Uğur Sarıçam - [Linkedin](https://www.linkedin.com/in/ugursaricam/)
+    - Alper Umut Keskin - [Linkedin](https://www.linkedin.com/in/alper-umut-keskin-10b25b77/), [Github](https://github.com/alperumut)
+    - Hakan Keskin - [Linkedin](https://www.linkedin.com/in/hakan-keskin-/), [Github](https://github.com/KeskinHakan)
+    - Oğuz Çalışkan - [Linkedin](https://www.linkedin.com/in/oğuz-çalışkan-71477939/), [Github](https://github.com/uzcaliskan)
+    - Uğur Sarıçam - [Linkedin](https://www.linkedin.com/in/ugursaricam/), [Github](https://github.com/ugursaricam)
     tarafından yapılmış ve kullanıma sunulmuştur.
     
-    Çalışmada "Keras" modeli kullanılarak, baraj doluluğunu etkileme potansiyeli olan tüm değişkenler dikkate alınacak şekilde
-    modellenerek ileriye dönük tahmin modeli kurulmuştur. Tahmin modeli üzerinden elde edilen sonuçlara göre kullanıcılar, ileriye dönük İstanbul Baraj Doluluk değerlerini kontrol edebilecektir.
-    
-    """
+    Çalışmada "LSTM Layer - Keras" modeli kullanılarak, baraj doluluğunu etkileme potansiyeli olan tüm değişkenler dikkate alınacak şekilde
+    modellenerek ileriye dönük tahmin modeli kurulmuştur. Tahmin modeli üzerinden elde edilen sonuçlara göre kullanıcılar, ileriye dönük İstanbul Baraj Doluluk değerlerini kontrol edebilecektir.</h2></div>
+        """,
+        unsafe_allow_html=True)
+
 
 pd.set_option("display.width", 500)
 pd.set_option("display.max_columns", None)
 
-# main_file_name = (r'C:\Users\hakan\OneDrive\Masaüstü\DSMLBC 11\07_Donem_Projesı\01_Models\SARIMAX_DAM_DAILY_3.xlsx') # change it to the name of your excel file
-# #
-# predicted_name = (r'C:\Users\hakan\OneDrive\Masaüstü\DSMLBC 11\07_Donem_Projesı\01_Models\predicted_data.xlsx') # change it to the name of your excel file
+main_file_name = (r'C:\Users\hakan\OneDrive\Masaüstü\DSMLBC 11\07_Donem_Projesı\final_set.xlsx') # change it to the name of your excel file
+#
+predicted_name = (r'C:\Users\hakan\OneDrive\Masaüstü\DSMLBC 11\07_Donem_Projesı\predict_dataset.xlsx') # change it to the name of your excel file
 
-main_file_name = "SARIMAX_DAM_DAILY_3.xlsx"
-predicted_name = "predicted_data.xlsx"
+# main_file_name = "final_set.xlsx"
+# predicted_name = "predict_dataset.xlsx"
 
 main_df = pd.read_excel(main_file_name)
 pred_df = pd.read_excel(predicted_name)
 
-if visual_method == "Geçmiş Veri":
+if visual_method == "Geçmiş Veriler":
 
-    st.sidebar.header("Geçmiş Veri için Tarih Bilgileri:")
+    st.sidebar.markdown("<h2 style='text-align: center; color: white;'>Geçmiş Veri Seçenekleri: </h2>",
+                unsafe_allow_html=True)
 
-    data_type = st.sidebar.selectbox("Veri Tipi: ", {"Barajlar", "Nüfus", "Günlük Su Tüketimi", "Sıcaklık Değişimi"}, index = 0)
+    data_type = st.sidebar.selectbox("Veri Tipi: ", {"Barajlar"}, index = 0)
     if data_type == "Barajlar":
         dam_name = st.sidebar.selectbox("Baraj: ",
-                                        {"Hepsi","Omerli", "Alibey", "Darlik", "Elmali", "Terkos", "Buyukcekmece", "Sazlidere","Kazandere", "Pabucdere", "Istrancalar"}, index = 0)
+                                        {"Hepsi","Ömerli", "Alibey", "Darlik", "Elmali", "Terkos", "Büyükçekmece", "Sazlidere","Kazandere", "Pabuçdere", "Istrancalar"}, index = 0)
 
     # Minimum ve maksimum tarihleri belirle
-    min_date = pd.to_datetime("2011-01-01") # Bugünden bir yıl önce
-    max_date = pd.to_datetime("2021-02-22")  # Bugünden bir yıl sonra
-    default_date = datetime(2020, 2, 22)  # Varsayılan tarih
+    min_date = pd.to_datetime("2011-01-01")  # Bugünden bir yıl önce
+    max_date = pd.to_datetime("2023-03-31")  # Bugünden bir yıl sonra
+    default_date = datetime(2022, 3, 31)  # Varsayılan tarih
 
     # Tarih girdisini alın
     selected_date = st.sidebar.date_input("Tarih Seçin", value=default_date, min_value=min_date, max_value=max_date)
@@ -102,13 +152,12 @@ if visual_method == "Geçmiş Veri":
 
             st.markdown(
                 f"""
-                <h2 style="text-align: center; font-size: 20px;">{selected} Tarihindeki Baraj Doluluk Oranları Dağılımı</h2>
+                <div class='background'><h2 style="text-align: center; font-size: 20px;">{selected} Tarihindeki Baraj Doluluk Oranları Dağılımı</h2></div>
                 """,
-                unsafe_allow_html=True
-            )
+                unsafe_allow_html=True)
 
             filtered_data = main_df[main_df['DATE_'] == selected_date]
-            values = filtered_data[['Omerli', 'Darlik', 'Elmali', 'Terkos', 'Alibey', 'Buyukcekmece', 'Sazlidere', 'Kazandere', 'Pabucdere', 'Istrancalar']]
+            values = filtered_data[['Ömerli', 'Darlik', 'Elmali', 'Terkos', 'Alibey', 'Büyükçekmece', 'Sazlidere', 'Kazandere', 'Pabuçdere', 'Istrancalar']]
 
             # İlk satırı seçme
             row = values.iloc[0]
@@ -123,8 +172,32 @@ if visual_method == "Geçmiş Veri":
             # Layout ayarları
             fig.update_layout(
                 height=500,  # Pasta grafiğinin yüksekliğini buradan ayarlayabilirsiniz
-                width=700,  # Pasta grafiğinin genişliğini buradan ayarlayabilirsiniz
+                width=704,  # Pasta grafiğinin genişliğini buradan ayarlayabilirsiniz
                 margin=dict(l=50, r=50, t=100, b=50),  # Grafik kenar boşluklarını ayarlayabilirsiniz
+                plot_bgcolor="rgba(180, 180, 180, 0.8)",  # Arka plan rengi ve transparanlık seviyesi
+                paper_bgcolor="rgba(180, 180, 180, 0.8)",  # Kağıt arka plan rengi (şeffaf olarak ayarlandı)
+                xaxis=dict(
+                    title=dict(
+                        text="Tarih",
+                        font=dict(
+                            color="black"  # X ekseni yazı rengi
+                        )
+                    ),
+                    tickfont=dict(
+                        color="black"  # X ekseni işaretçi yazı rengi
+                    )
+                ),
+                yaxis=dict(
+                    title=dict(
+                        text="Baraj Doluluk [m3]",
+                        font=dict(
+                            color="black"  # Y ekseni yazı rengi
+                        )
+                    ),
+                    tickfont=dict(
+                        color="black"  # Y ekseni işaretçi yazı rengi
+                    )
+                )
             )
 
             st.plotly_chart(fig)
@@ -142,10 +215,9 @@ if visual_method == "Geçmiş Veri":
 
             st.markdown(
                 f"""
-                <h2 style="text-align: center; font-size: 20px;">{first_day_new} - {selected} Tarihleri Arasındaki Baraj Doluluk Seviyeleri</h2>
+                <div class='background'><h2 style="text-align: center; font-size: 20px;">{first_day_new} - {selected} Tarihleri Arasındaki Baraj Doluluk Seviyeleri</h2></div>
                 """,
-                unsafe_allow_html=True
-            )
+                unsafe_allow_html=True)
 
             # Renk paleti
 
@@ -157,7 +229,36 @@ if visual_method == "Geçmiş Veri":
                 data=[go.Bar(x=filtered_data['DATE_'], y=filtered_data["BARAJ_DOLULUK"])])
 
             # X ve Y ekseni etiketleri
-            fig.update_layout(xaxis_title='Tarih', yaxis_title='Değer')
+            fig.update_layout(xaxis_title='Tarih', yaxis_title='Değer',
+                              width=704,
+                              height=500,
+                              plot_bgcolor="rgba(180, 180, 180, 0.8)",  # Arka plan rengi ve transparanlık seviyesi
+                              paper_bgcolor="rgba(180, 180, 180, 0.8)",
+                              # Kağıt arka plan rengi (şeffaf olarak ayarlandı)
+                              xaxis=dict(
+                                  title=dict(
+                                      text="Tarih",
+                                      font=dict(
+                                          color="black"  # X ekseni yazı rengi
+                                      )
+                                  ),
+                                  tickfont=dict(
+                                      color="black"  # X ekseni işaretçi yazı rengi
+                                  )
+                              ),
+                              yaxis=dict(
+                                  title=dict(
+                                      text="Baraj Doluluk [m3]",
+                                      font=dict(
+                                          color="black"  # Y ekseni yazı rengi
+                                      )
+                                  ),
+                                  tickfont=dict(
+                                      color="black"  # Y ekseni işaretçi yazı rengi
+                                  )
+                              )
+                              )
+
 
             st.plotly_chart(fig)
 
@@ -172,10 +273,9 @@ if visual_method == "Geçmiş Veri":
 
             st.markdown(
                 f"""
-                <h2 style="text-align: center; font-size: 20px;">{first_day_new} - {selected} Tarihleri Arasındaki {dam_name} Barajı Doluluk Seviyeleri</h2>
+                <div class='background'><h2 style="text-align: center; color: white; font-size: 20px;">{first_day_new} - {selected} Tarihleri Arasındaki {dam_name} Barajı Doluluk Seviyeleri</h2></div>
                 """,
-                unsafe_allow_html=True
-            )
+                unsafe_allow_html=True)
 
             # Veriye uygun bir başlangıç noktası belirleme
             start_index = filtered_data[dam_name].idxmax()
@@ -199,7 +299,36 @@ if visual_method == "Geçmiş Veri":
             )])
 
             # X ve Y ekseni etiketleri
-            fig.update_layout(xaxis_title='Tarih', yaxis_title='Doluluk [m3]')
+            fig.update_layout(xaxis_title='Tarih',
+                              yaxis_title='Doluluk [m3]',
+                              width=704,
+                              height=500,
+                              plot_bgcolor="rgba(180, 180, 180, 0.8)",  # Arka plan rengi ve transparanlık seviyesi
+                              paper_bgcolor="rgba(180, 180, 180, 0.8)",
+                              # Kağıt arka plan rengi (şeffaf olarak ayarlandı)
+                              xaxis=dict(
+                                  title=dict(
+                                      text="Tarih",
+                                      font=dict(
+                                          color="black"  # X ekseni yazı rengi
+                                      )
+                                  ),
+                                  tickfont=dict(
+                                      color="black"  # X ekseni işaretçi yazı rengi
+                                  )
+                              ),
+                              yaxis=dict(
+                                  title=dict(
+                                      text="Baraj Doluluk [m3]",
+                                      font=dict(
+                                          color="black"  # Y ekseni yazı rengi
+                                      )
+                                  ),
+                                  tickfont=dict(
+                                      color="black"  # Y ekseni işaretçi yazı rengi
+                                  )
+                              )
+                              )
 
             # # Grafiği görselleştirme
             # fig.show()
@@ -233,10 +362,9 @@ if visual_method == "Geçmiş Veri":
 
             st.markdown(
                 f"""
-                <h2 style="text-align: center; font-size: 20px;">{first_day_new} - {last_day_new} Tarihleri Arasındaki {dam_name} Barajı Doluluk Seviyeleri</h2>
+                <div class='background'><h2 style="text-align: center; color: white; font-size: 20px;">{last_day_new} - {first_day_new} Tarihleri Arasındaki {dam_name} Barajı Doluluk Seviyeleri</h2></div>
                 """,
-                unsafe_allow_html=True
-            )
+                unsafe_allow_html=True)
 
 
             # "dam_name" e göre filtreleme yapma
@@ -252,126 +380,50 @@ if visual_method == "Geçmiş Veri":
 
             # Grafik düzenlemeleri
             fig.update_layout(
-                title=f"{dam_name} Verileri",
                 xaxis_title="Tarih",
                 yaxis_title=f"{dam_name} Değeri",
                 barmode="group",
-                showlegend=False
+                width=704,
+                height=500,
+                plot_bgcolor="rgba(180, 180, 180, 0.8)",  # Arka plan rengi ve transparanlık seviyesi
+                paper_bgcolor="rgba(180, 180, 180, 0.8)",  # Kağıt arka plan rengi (şeffaf olarak ayarlandı)
+                xaxis=dict(
+                    title=dict(
+                        text="Tarih",
+                        font=dict(
+                            color="black"  # X ekseni yazı rengi
+                        )
+                    ),
+                    tickfont=dict(
+                        color="black"  # X ekseni işaretçi yazı rengi
+                    )
+                ),
+                yaxis=dict(
+                    title=dict(
+                        text="Baraj Doluluk [m3]",
+                        font=dict(
+                            color="black"  # Y ekseni yazı rengi
+                        )
+                    ),
+                    tickfont=dict(
+                        color="black"  # Y ekseni işaretçi yazı rengi
+                    )
+                )
             )
 
             st.plotly_chart(fig)
 
 
-    elif data_type == "Nüfus":
-        filtered_data = main_df[main_df['DATE_'] <= selected_date]
-        values = filtered_data[["DATE_", 'Toplam_Pop']]
+elif visual_method == "Tahmin Sonuçları":
 
-        st.markdown(
-            f"""
-            <h2 style="text-align: center; font-size: 20px;">2011 - 2021 Tarihleri Arasındaki Nüfus Değişimi</h2>
-            """,
-            unsafe_allow_html=True
-        )
-
-        fig = go.Figure(data=go.Scatter(x=filtered_data['DATE_'], y=filtered_data['Toplam_Pop'],
-                                        mode='lines', line=dict(color='#FFA07A'),
-                                        name='Toplam Popülasyon'))
-
-        fig.update_layout(
-            xaxis_title='Tarih',
-            yaxis_title='Toplam Popülasyon',
-            plot_bgcolor='rgba(25, 25, 50, 0.2)',  # Arka plan rengini buradan değiştirebilirsiniz
-            paper_bgcolor='black',  # Kağıt arka plan rengini buradan değiştirebilirsiniz
-            legend=dict(
-                x=0.02,
-                y=0.98,
-                bgcolor='rgba(100, 100, 100, 0.7)',
-                bordercolor='rgba(20, 20,20, 0.5)',
-                borderwidth=1
-            )
-        )
-
-        # # Grafiği görselleştirme
-        # fig.show(renderer="browser")
-
-        st.plotly_chart(fig)
-    elif data_type == "Sıcaklık Değişimi":
-        filtered_data = main_df[main_df['DATE_'] <= selected_date]
-        values = filtered_data[["DATE_", 'Temp_Out']]
-
-        st.markdown(
-            f"""
-            <h2 style="text-align: center; font-size: 20px;">2011 - 2021 Tarihleri Arasındaki Sıcaklık Değişimi</h2>
-            """,
-            unsafe_allow_html=True
-        )
-
-        fig = go.Figure(data=go.Scatter(x=filtered_data['DATE_'], y=filtered_data['Temp_Out'],
-                                        mode='lines', line=dict(color='#FFA07A'),
-                                        name='Sıcaklık Değişimi'))
-
-        fig.update_layout(
-            xaxis_title='Tarih',
-            yaxis_title='Sıcaklık Değişimi',
-            plot_bgcolor='rgba(25, 25, 50, 0.2)',  # Arka plan rengini buradan değiştirebilirsiniz
-            paper_bgcolor='black',  # Kağıt arka plan rengini buradan değiştirebilirsiniz
-            legend=dict(
-                x=0.02,
-                y=0.98,
-                bgcolor='rgba(100, 100, 100, 0.7)',
-                bordercolor='rgba(20, 20,20, 0.5)',
-                borderwidth=1
-            )
-        )
-
-        # # Grafiği görselleştirme
-        # fig.show(renderer="browser")
-
-        st.plotly_chart(fig)
-
-    elif data_type == "Günlük Su Tüketimi":
-        filtered_data = main_df[main_df['DATE_'] <= selected_date]
-        values = filtered_data[["DATE_", 'gunluk_su_tuketimi_m3']]
-
-        st.markdown(
-            f"""
-                <h2 style="text-align: center; font-size: 20px;">2011 - 2021 Tarihleri Arasındaki Günlük Su Tüketimi Değişimi</h2>
-                """,
-            unsafe_allow_html=True
-        )
-
-        fig = go.Figure(data=go.Scatter(x=filtered_data['DATE_'], y=filtered_data['gunluk_su_tuketimi_m3'],
-                                        mode='lines', line=dict(color='#FFA07A'),
-                                        name='Günlük Su Tüketimi [m3]'))
-
-        fig.update_layout(
-            xaxis_title='Tarih',
-            yaxis_title='Günlük Su Tüketimi [m3]',
-            plot_bgcolor='rgba(25, 25, 50, 0.2)',  # Arka plan rengini buradan değiştirebilirsiniz
-            paper_bgcolor='black',  # Kağıt arka plan rengini buradan değiştirebilirsiniz
-            legend=dict(
-                x=0.02,
-                y=0.98,
-                bgcolor='rgba(100, 100, 100, 0.7)',
-                bordercolor='rgba(20, 20,20, 0.5)',
-                borderwidth=1
-            )
-        )
-
-        # # Grafiği görselleştirme
-        # fig.show(renderer="browser")
-
-        st.plotly_chart(fig)
-
-elif visual_method == "Gelecek Veri":
-
-    st.sidebar.header("Tahmin Verisi için Tarih Bilgileri:")
+    st.sidebar.markdown("<h2 style='text-align: center; color: white;'>Tahmin Verisi Seçenekleri: </h2>",
+                unsafe_allow_html=True)
 
     full_data = st.sidebar.selectbox("Veri Tipi: ", {"Baraj Doluluk"})
 
-    min_date = pd.to_datetime("2021-02-22")  # Bugünden bir yıl önce
-    max_date = pd.to_datetime("2023-12-31")  # Bugünden bir yıl sonra
-    default_date = datetime(2021, 2, 23)  # Varsayılan tarih
+    min_date = pd.to_datetime("2023-03-31")  # Bugünden bir yıl önce
+    max_date = pd.to_datetime("2025-12-24")  # Bugünden bir yıl sonra
+    default_date = datetime(2023, 3, 31)  # Varsayılan tarih
 
     # Tarih girdisini alın
     selected_date = st.sidebar.date_input("Tarih Seçin", value=default_date, min_value=min_date, max_value=max_date)
@@ -391,8 +443,14 @@ elif visual_method == "Gelecek Veri":
     last_day = new_date.strftime("%d-%m-%Y")
 
     st.markdown(
+        "<div class='background'><h2 style='text-align: center; color: white;'>Geleceğe Dönük Toplam Baraj Doluluk Hacmi Tahminleme</h2></div>",
+        unsafe_allow_html=True)
+
+    st.markdown(
         f"""
-        <h2 style="text-align: center; font-size: 20px;">{first_day_new} - {last_day} Tarihleri Arasındaki Baraj Doluluk Seviyeleri</h2>
+        <div style="background-color: rgba(0, 0, 0, 0.30); padding: 10px; border-radius: 5px;">
+            <h2 style="text-align: center;color: white; font-size: 20px;">{first_day_new} - {last_day} Tarihleri Arasındaki Baraj Doluluk Seviyeleri</h2>
+        </div>
         """,
         unsafe_allow_html=True
     )
@@ -421,7 +479,36 @@ elif visual_method == "Gelecek Veri":
     )])
 
     # X ve Y ekseni etiketleri
-    fig.update_layout(xaxis_title='Tarih', yaxis_title='Baraj Doluluk [m3]')
+    fig.update_layout(
+        xaxis_title='Tarih',
+        yaxis_title='Baraj Doluluk [m3]',
+        width=704,
+        height=500,
+        plot_bgcolor="rgba(180, 180, 180, 0.8)",  # Arka plan rengi ve transparanlık seviyesi
+        paper_bgcolor="rgba(180, 180, 180, 0.8)",  # Kağıt arka plan rengi (şeffaf olarak ayarlandı)
+        xaxis=dict(
+            title=dict(
+                text="Tarih",
+                font=dict(
+                    color="black"  # X ekseni yazı rengi
+                )
+            ),
+            tickfont=dict(
+                color="black"  # X ekseni işaretçi yazı rengi
+            )
+        ),
+        yaxis=dict(
+            title=dict(
+                text="Baraj Doluluk [m3]",
+                font=dict(
+                    color="black"  # Y ekseni yazı rengi
+                )
+            ),
+            tickfont=dict(
+                color="black"  # Y ekseni işaretçi yazı rengi
+            )
+        )
+    )
 
     st.plotly_chart(fig)
 
@@ -432,11 +519,16 @@ elif visual_method == "Gelecek Veri":
 
     st.markdown(
         f"""
-        <h2 style="text-align: center; font-size: 20px;">Baraj Doluluk Değerleri 2011-2023</h2>
+       
         """,
         unsafe_allow_html=True
     )
 
+    st.markdown(
+        f"""
+        <div class='background'> <h2 style="text-align: center; color: white; font-size: 20px;">Baraj Doluluk Değerleri 2011-2025</h2></div>
+        """,
+        unsafe_allow_html=True)
 
     # Veriye uygun bir başlangıç noktası belirleme
     main_data = main_df[["DATE_","BARAJ_DOLULUK"]]
@@ -447,10 +539,28 @@ elif visual_method == "Gelecek Veri":
     data = [trace1, trace2]
 
     layout = go.Layout(
-        xaxis=dict(title="Tarih"),
-        yaxis=dict(title="Baraj Doluluk [m3]"),
-        width=800,  # Genişlik değerini istediğiniz gibi ayarlayın
-        height=500  # Yükseklik değerini istediğiniz gibi ayarlayın
+        xaxis=dict(
+            title="Tarih",
+            titlefont=dict(
+                color="black"  # X ekseni yazı rengi
+            ),
+            tickfont=dict(
+                color="black"  # X ekseni işaretçi yazı rengi
+            )
+        ),
+        yaxis=dict(
+            title="Baraj Doluluk [m3]",
+            titlefont=dict(
+                color="black"  # Y ekseni yazı rengi
+            ),
+            tickfont=dict(
+                color="black"  # Y ekseni işaretçi yazı rengi
+            )
+        ),
+        width=704,  # Genişlik değerini istediğiniz gibi ayarlayın
+        height=500,  # Yükseklik değerini istediğiniz gibi ayarlayın
+        plot_bgcolor = "rgba(180, 180, 180, 0.8)",  # Arka plan rengi ve transparanlık seviyesi
+        paper_bgcolor = "rgba(180, 180, 180, 0.8)",  # Kağıt arka plan rengi (şeffaf olarak ayarlandı)
     )
 
     fig = go.Figure(data=data, layout=layout)
@@ -471,7 +581,9 @@ elif visual_method == "Gelecek Veri":
 
     st.markdown(
         f"""
-        <h2 style="text-align: center; font-size: 20px;">{first_day_new} - {last_day_new} Tarihleri Arasındaki Toplam Doluluk Değerleri</h2>
+        <div style="background-color: rgba(0, 0, 0, 0.5); padding: 10px; border-radius: 5px;">
+            <h2 style="text-align: center;color: white; font-size: 20px;">{first_day_new} - {last_day_new} Tarihleri Arasındaki Toplam Doluluk Değerleri </h2>
+        </div>
         """,
         unsafe_allow_html=True
     )
@@ -493,8 +605,32 @@ elif visual_method == "Gelecek Veri":
         yaxis_title="Baraj Doluluk [m3]",
         barmode="group",
         showlegend=False,
-        width=800,
-        height=500
+        width=704,
+        height=500,
+        plot_bgcolor = "rgba(180, 180, 180, 0.8)",  # Arka plan rengi ve transparanlık seviyesi
+        paper_bgcolor = "rgba(180, 180, 180, 0.8)",  # Kağıt arka plan rengi (şeffaf olarak ayarlandı)
+        xaxis = dict(
+            title=dict(
+                text="Tarih",
+                font=dict(
+                    color="black"  # X ekseni yazı rengi
+                )
+            ),
+            tickfont=dict(
+                color="black"  # X ekseni işaretçi yazı rengi
+            )
+        ),
+        yaxis = dict(
+            title=dict(
+                text="Baraj Doluluk [m3]",
+                font=dict(
+                    color="black"  # Y ekseni yazı rengi
+                )
+            ),
+            tickfont=dict(
+                color="black"  # Y ekseni işaretçi yazı rengi
+            )
+        )
     )
 
     # Grafiği görüntüleme
