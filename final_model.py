@@ -106,12 +106,12 @@ if visual_method == "Bilgilendirme":
 pd.set_option("display.width", 500)
 pd.set_option("display.max_columns", None)
 
-main_file_name = (r'C:\Users\hakan\OneDrive\Masaüstü\DSMLBC 11\07_Donem_Projesı\final_set.xlsx') # change it to the name of your excel file
-#
-predicted_name = (r'C:\Users\hakan\OneDrive\Masaüstü\DSMLBC 11\07_Donem_Projesı\predict_dataset.xlsx') # change it to the name of your excel file
+# main_file_name = (r'C:\Users\hakan\OneDrive\Masaüstü\DSMLBC 11\07_Donem_Projesı\final_set.xlsx') # change it to the name of your excel file
+# #
+# predicted_name = (r'C:\Users\hakan\OneDrive\Masaüstü\DSMLBC 11\07_Donem_Projesı\predict_dataset.xlsx') # change it to the name of your excel file
 
-# main_file_name = "final_set.xlsx"
-# predicted_name = "predict_dataset.xlsx"
+main_file_name = "final_set.xlsx"
+predicted_name = "predict_dataset.xlsx"
 
 main_df = pd.read_excel(main_file_name)
 pred_df = pd.read_excel(predicted_name)
